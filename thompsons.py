@@ -28,7 +28,8 @@ def compile(pofix):
             #connect  first nfa's accept state to the second's inital
             nfa1.accept.edge1 = nfa2.initial
             #Push nfa to the stack
-            nfastack.append(nfa(nfa1.initial, nfa2.accept))
+            newnfa = nfa(nfa1.initial, nfa2.accept)
+            nfastack.append(newnfa)
 
         elif c == '|':
             #Pop 2 nfa's off the stack
@@ -43,7 +44,8 @@ def compile(pofix):
             nfa1.accept.edge1 = accept
             nfa2.accept.edge2 = accept
             #Push new nfa to the stack
-            nfastack.append(nfa(initial, accept))
+            newnfa = nfa(initial, accept)
+            nfastack.append(newnfa)
 
         elif c == '*':
             #Pop a single nfa from the stack
@@ -58,7 +60,8 @@ def compile(pofix):
             nfa1.accept.edge1 = nfa1.initial
             nfa1.accept.edge2 = accept
             #Push the new NFA to the stack
-            nfastack.append(nfa(initial, accept))
+            newnfa = nfa(initial, accept)
+            nfastack.append(newnfa)
 
         else:
             #Create new initial and accept states
@@ -75,3 +78,4 @@ def compile(pofix):
     return nfastack.pop()
 
 print(compile("ab.cd.|"))
+print(compile("aa.*"))
