@@ -115,6 +115,60 @@ def compile(pofix):
     #nfastack should only have a single nfa on it at this point
     return nfastack.pop()
 
+def followes(state):
+    """Return the set of states that can be reached from state following e arrows"""
+    #Create a new set as state as its only member
+    states = set()
+    states.add(set)
+
+    #Check if the state has arrows labelled e from them
+    if state.label is None:
+        #Check if edge1 is a state
+        if state.edge1 is not None:
+            #If theres an edge1 - follow it
+            states |= followes(state.edge1)
+        #Check if edge 2 is a state
+        if state.edge2 is not None:
+            #If theres an eddge2 - follow it
+            states |= followes(state.edge2)
+    
+    #Returns the set of states.
+    return states
+
+#Compiles the infix to postfix and creates an nfa from it
+def match(infix, string):
+    """Matches String to the infix regular expressions"""
+    #shunt and compilethe regular expression
+    postfix = shunt(infix)
+    nfa = compile(postfix)
+
+
+    #The current set of state, and next set of states
+    current = set()
+    next = set()
+
+    #Add the initial state to the current set
+    current |= followes(nfa.initial)
+
+    #Loop through each char in the string
+    for s in string:
+        #loop through the current set of states 
+        for c in current:
+            #Check if that state is labelled s
+            if c.label == s:
+              #Add the edge1 state to the next set including all the states from e arrows
+              next |=followes(c.edge1)
+        #Set current to next and clear next
+        current = next
+        next = set()
+
+    #Check if the accept state is in the list of the current states
+    return(nfa.accept in current)
+
+
+
+
+
 #Testings
 infixes = ["a.b.c*","a.(b|d).c*","(a.(b|d))*","a.(b.b)*.c"]
 strings=["","abc","abbc","abcc","abad","abbbc"]
