@@ -115,5 +115,10 @@ def compile(pofix):
     #nfastack should only have a single nfa on it at this point
     return nfastack.pop()
 
-print(compile("ab.cd.|"))
-print(compile("aa.*"))
+#Testings
+infixes = ["a.b.c*","a.(b|d).c*","(a.(b|d))*","a.(b.b)*.c"]
+strings=["","abc","abbc","abcc","abad","abbbc"]
+
+for i in infixes:
+    for s in strings:
+        print(match(i,s),i,s)
