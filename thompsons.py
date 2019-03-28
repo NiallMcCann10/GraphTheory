@@ -1,6 +1,44 @@
 #Thompsons contruction
 #Niall McCann
 
+#Shunting yard
+
+def shunt(infix):
+    """The shunting yard algorithm for converting infix expressions to postfix"""
+
+   
+    specials = {'*': 50, '.': 40, '|': 30}
+
+    pofix = ""
+    stack = ""
+
+    for c in infix:
+        if c == '(':
+            stack = stack + c
+
+        elif c == ')':
+            while stack[-1] != '(':
+                pofix = pofix + stack[-1]
+                stack = stack[:-1]
+            stack = stack[:-1]
+
+        elif c in specials:
+            while stack and specials.get(c, 0) <= specials.get(stack[-1], 0):
+                pofix, stack = pofix + stack[-1], stack[:-1]
+            stack = stack + c
+
+        else:
+            pofix = pofix + c
+
+    while stack:
+        pofix = pofix + stack[-1]
+        stack = stack[:-1]
+    
+
+    return pofix
+
+##print(shunt("(a.b)|(c*.d)"))
+
 #Represents a state with 2 arrows, labelled by label
 #Use None for a label representing 'e' arrows
 class state:
