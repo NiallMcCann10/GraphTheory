@@ -6,35 +6,38 @@
 def shunt(infix):
     """The shunting yard algorithm for converting infix expressions to postfix"""
 
-   
+   #Special Characters to be used with the regular expressions and their precedence over each other
     specials = {'*': 50, '.': 40, '|': 30}
-
+    #Will eventually be the output
     pofix = ""
+    #Operator stack
     stack = ""
 
+    #Loop through string, 1 Charachter at a time
     for c in infix:
+        #If an open bracket, push it onto the stack
         if c == '(':
             stack = stack + c
-
+        #If a closing bracket, pop to the output until open bracket
         elif c == ')':
             while stack[-1] != '(':
                 pofix = pofix + stack[-1]
                 stack = stack[:-1]
             stack = stack[:-1]
-
+        #If operator, push to stack after popping lower or equal precedence operators from top of stack to output
         elif c in specials:
             while stack and specials.get(c, 0) <= specials.get(stack[-1], 0):
                 pofix, stack = pofix + stack[-1], stack[:-1]
             stack = stack + c
-
+        #Regular chars are pushed right away to output
         else:
             pofix = pofix + c
-
+    #pop all remaining operators from stack to output
     while stack:
         pofix = pofix + stack[-1]
         stack = stack[:-1]
     
-
+    #Return Postfix regular expression
     return pofix
 
 ##print(shunt("(a.b)|(c*.d)"))
@@ -56,6 +59,7 @@ class nfa:
         self.accept = accept
 
 def compile(pofix):
+    """Compiles a postfix regular expression into an nfa"""
     nfastack = []
 
     for c in pofix:
