@@ -123,7 +123,7 @@ def followes(state):
     """Return the set of states that can be reached from state following e arrows"""
     #Create a new set as state as its only member
     states = set()
-    states.add(set)
+    states.add(state)
 
     #Check if the state has arrows labelled e from them
     if state.label is None:
@@ -161,7 +161,7 @@ def match(infix, string):
             #Check if that state is labelled s
             if c.label == s:
               #Add the edge1 state to the next set including all the states from e arrows
-              next |=followes(c.edge1)
+              next |= followes(c.edge1)
         #Set current to next and clear next
         current = next
         next = set()
@@ -169,13 +169,9 @@ def match(infix, string):
     #Check if the accept state is in the list of the current states
     return(nfa.accept in current)
 
-
-
-
-
 #Testings
 infixes = ["a.b.c*","a.(b|d).c*","(a.(b|d))*","a.(b.b)*.c"]
-strings=["","abc","abbc","abcc","abad","abbbc"]
+strings = ["","abc","abbc","abcc","abad","abbbc"]
 
 for i in infixes:
     for s in strings:
