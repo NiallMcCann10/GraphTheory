@@ -7,7 +7,7 @@ def shunt(infix):
     """The shunting yard algorithm for converting infix expressions to postfix"""
 
    #Special Characters to be used with the regular expressions and their precedence over each other
-    specials = {'*': 50, '.': 40, '|': 30}
+    specials = {'*': 50, '.': 40, '|': 30, '+':20, '?':10}
     #Will eventually be the output
     pofix = ""
     #Operator stack
@@ -103,6 +103,26 @@ def compile(pofix):
             newnfa = nfa(initial, accept)
             nfastack.append(newnfa)
 
+        elif c == '+':
+            #Pop 2 nfa's off the stack
+            nfa2 = nfastack.pop()
+            nfa1 = nfastack.pop()
+            #connect  first nfa's accept state to the second's inital
+            nfa1.accept.edge1 = nfa2.initial
+            #Push nfa to the stack
+            newnfa = nfa(nfa1.initial, nfa2.accept)
+            nfastack.append(newnfa)
+
+        elif c == '?':
+            #Pop 2 nfa's off the stack
+            nfa2 = nfastack.pop()
+            nfa1 = nfastack.pop()
+            #connect  first nfa's accept state to the second's inital
+            nfa1.accept.edge1 = nfa2.initial
+            #Push nfa to the stack
+            newnfa = nfa(nfa1.initial, nfa2.accept)
+            nfastack.append(newnfa)
+
         else:
             #Create new initial and accept states
             accept = state()
@@ -168,7 +188,7 @@ def match(infix, string):
     return(nfa.accept in current)
 
 #Testings
-infixes = ["a.b.c*","a.(b|d).c*","(a.(b|d))*","a.(b.b)*.c"]
+infixes = ["a.b.c*","a.(b|d).c*","(a.(b|d))*","a.(b.b)*.c","a+b+c","a+b.c","a|b+c*","a?b?c","a+b?c","a?b.c","a?b|c*",]
 strings = ["","abc","abbc","abcc","abad","abbbc"]
 
 for i in infixes:
