@@ -21,8 +21,7 @@ def shunt(infix):
         #If a closing bracket, pop to the output until open bracket
         elif c == ')':
             while stack[-1] != '(':
-                pofix = pofix + stack[-1]
-                stack = stack[:-1]
+                pofix, stack = pofix + stack[-1], stack[:-1]
             stack = stack[:-1]
         #If operator, push to stack after popping lower or equal precedence operators from top of stack to output
         elif c in specials:
@@ -34,8 +33,7 @@ def shunt(infix):
             pofix = pofix + c
     #pop all remaining operators from stack to output
     while stack:
-        pofix = pofix + stack[-1]
-        stack = stack[:-1]
+        pofix, stack = pofix + stack[-1], stack[:-1]
     
     #Return Postfix regular expression
     return pofix
@@ -54,7 +52,7 @@ class nfa:
     initial = None
     accept = None
 
-    def _init_(self, initial, accept):
+    def __init__(self, initial, accept):
         self.initial = initial
         self.accept = accept
 
@@ -84,7 +82,7 @@ def compile(pofix):
             #create a new accept state connecting the accept states of the 2 nfa's popped from the stack to the new stack
             accept = state()
             nfa1.accept.edge1 = accept
-            nfa2.accept.edge2 = accept
+            nfa2.accept.edge1 = accept
             #Push new nfa to the stack
             newnfa = nfa(initial, accept)
             nfastack.append(newnfa)
@@ -175,4 +173,4 @@ strings = ["","abc","abbc","abcc","abad","abbbc"]
 
 for i in infixes:
     for s in strings:
-        print(match(i,s),i,s)
+        print(match(i, s), i, s)
